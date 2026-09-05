@@ -8,6 +8,8 @@ import {
   recordRecentVisit,
   getStatusMeta,
   getPinnedProjects,
+  getCategoryOptions,
+  moveOptionIndex,
   STORAGE_KEYS,
 } from '../public/client.mjs';
 import { projects } from '../src/projects.mjs';
@@ -23,6 +25,20 @@ test('搜索同时匹配名称、描述、分类和标签且忽略大小写', ()
 test('分类筛选与关键词搜索可以组合', () => {
   const result = filterProjects(projects, { category: '账号与权益', query: 'charge' });
   assert.deepEqual(result.map(({ id }) => id), ['geek-charge']);
+});
+
+test('分类选项由项目数据生成并包含全部项目计数', () => {
+  assert.deepEqual(getCategoryOptions(projects), [
+    { value: 'all', label: '全部分类', count: 3 },
+    { value: '账号与权益', label: '账号与权益', count: 2 },
+    { value: '其他工具', label: '其他工具', count: 1 },
+  ]);
+});
+
+test('键盘方向移动在分类选项首尾循环', () => {
+  assert.equal(moveOptionIndex(0, 1, 3), 1);
+  assert.equal(moveOptionIndex(2, 1, 3), 0);
+  assert.equal(moveOptionIndex(0, -1, 3), 2);
 });
 
 test('收藏逻辑可添加和移除项目且不产生重复项', () => {

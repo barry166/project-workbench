@@ -16,6 +16,21 @@ export function getStatusMeta(status) {
   return STATUS_META[status] ?? STATUS_META.planned;
 }
 
+export function getCategoryOptions(list) {
+  const counts = new Map();
+  for (const project of list) {
+    counts.set(project.category, (counts.get(project.category) ?? 0) + 1);
+  }
+  return [
+    { value: 'all', label: '全部分类', count: list.length },
+    ...[...counts].map(([value, count]) => ({ value, label: value, count })),
+  ];
+}
+
+export function moveOptionIndex(index, direction, length) {
+  return (index + direction + length) % length;
+}
+
 export function filterProjects(list, { query = '', category = 'all' } = {}) {
   const needle = query.trim().toLocaleLowerCase();
   return [...list]
