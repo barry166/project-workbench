@@ -1,0 +1,242 @@
+/* Filter console: shared interaction language with Geek Charge. */
+.control-strip {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 34%);
+  gap: clamp(28px, 5vw, 72px);
+  padding: 38px clamp(22px, 7vw, 110px);
+  overflow: visible;
+  background: #0e1011;
+  border-bottom: 1px solid var(--line);
+}
+
+.control-field { min-width: 0; }
+
+.control-label {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 11px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.control-label b {
+  color: #64696b;
+  font: 500 9px/1 var(--mono);
+  letter-spacing: .15em;
+}
+
+.search-input-shell,
+.category-trigger {
+  height: 78px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid #555a5c;
+  border-bottom: 1px solid #555a5c;
+}
+
+.search-input-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  transition: border-color .2s;
+}
+
+.search-input-shell:focus-within { border-color: var(--orange); }
+
+.search-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  margin-right: 20px;
+  fill: none;
+  stroke: var(--orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  transition: filter .25s, transform .25s;
+}
+
+.search-input-shell:focus-within .search-icon {
+  filter: drop-shadow(0 0 7px rgba(255, 107, 25, .75));
+  transform: scale(1.05);
+}
+
+.search-divider {
+  width: 1px;
+  height: 27px;
+  flex: 0 0 1px;
+  margin-right: 20px;
+  background: var(--line);
+}
+
+.search-input-shell input {
+  min-width: 0;
+  flex: 1;
+  color: var(--ink);
+  font: 500 clamp(18px, 2vw, 26px)/1 var(--mono);
+  letter-spacing: .01em;
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+
+.search-input-shell input::-webkit-search-cancel-button { display: none; }
+.search-input-shell input::placeholder { color: #484c4e; letter-spacing: 0; }
+
+.search-clear {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  color: var(--muted);
+  font: 22px/1 var(--mono);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  transition: color .2s, transform .2s;
+}
+
+.search-clear:hover { color: var(--orange); transform: rotate(90deg); }
+.search-clear[hidden] { display: none; }
+
+.field-scan {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--orange);
+  box-shadow: 0 0 12px var(--orange);
+  transition: width .35s;
+}
+
+.search-input-shell:focus-within .field-scan { width: 100%; }
+.category-picker { position: relative; }
+
+.category-trigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 0 16px;
+  font: 600 16px var(--mono);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+
+.category-trigger:hover,
+.category-trigger:focus-visible,
+.category-trigger[aria-expanded="true"] { border-color: var(--orange); outline: 0; }
+
+.category-trigger small {
+  color: var(--orange);
+  font: 700 10px var(--mono);
+  letter-spacing: .08em;
+}
+
+.category-trigger svg {
+  width: 20px;
+  fill: none;
+  stroke: var(--orange);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform .18s;
+}
+
+.category-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.category-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  padding: 6px;
+  background: #101315;
+  border: 1px solid #555a5c;
+  outline: 0;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, .42);
+  animation: menu-in .16s ease-out;
+}
+
+.category-menu[hidden] { display: none; }
+
+.category-option {
+  position: relative;
+  width: 100%;
+  min-height: 52px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 20px;
+  gap: 10px;
+  align-items: center;
+  padding: 0 12px;
+  color: #aeb2b3;
+  font: 600 12px var(--mono);
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  transition: background .16s, color .16s;
+}
+
+.category-option:hover,
+.category-option.is-active { color: var(--ink); background: #171b1d; }
+.category-option[aria-selected="true"] { color: var(--orange); }
+
+.category-option[aria-selected="true"]::before {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 2px;
+  content: "";
+  background: var(--orange);
+  animation: option-rail .18s ease-out;
+}
+
+.category-option small { color: var(--dim); font: 700 9px var(--mono); letter-spacing: .08em; }
+.category-option i { visibility: hidden; color: var(--orange); font-style: normal; }
+.category-option[aria-selected="true"] i { visibility: visible; }
+
+#project-grid .project-card { animation: result-in .28s cubic-bezier(.2, .8, .2, 1) both; }
+#project-grid .project-card:nth-child(2) { animation-delay: .04s; }
+#project-grid .project-card:nth-child(3) { animation-delay: .08s; }
+
+@keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@keyframes option-rail { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes result-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px) {
+  .control-strip { grid-template-columns: 1fr; gap: 30px; }
+}
+
+@media (max-width: 640px) {
+  .control-strip { gap: 26px; padding: 25px 20px 30px; }
+  .search-input-shell,
+  .category-trigger { height: 68px; }
+  .control-label { font-size: 12px; }
+  .control-label b { font-size: 8px; }
+  .search-icon { margin-right: 14px; }
+  .search-divider { margin-right: 14px; }
+  .search-input-shell input { font-size: 16px; }
+  .search-clear { width: 48px; min-width: 48px; }
+  .category-menu { width: 100%; max-width: calc(100vw - 40px); }
+  .category-option { min-height: 54px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-icon,
+  .search-clear,
+  .field-scan,
+  .category-trigger,
+  .category-trigger svg,
+  .category-option { transition: none; }
+  .category-menu,
+  .category-option[aria-selected="true"]::before,
+  #project-grid .project-card { animation: none; }
+}

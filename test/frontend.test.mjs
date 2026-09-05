@@ -108,10 +108,17 @@ test('生产入口将 /api/health 路由到同一个安全健康响应', async (
 });
 
 test('移动端 CSS 阻止页面级横向溢出并切换为单列', async () => {
-  const css = await readFile(new URL('../public/styles.css', import.meta.url), 'utf8');
+  const css = (await Promise.all([
+    readFile(new URL('../public/styles.css', import.meta.url), 'utf8'),
+    readFile(new URL('../public/filter-controls.css', import.meta.url), 'utf8'),
+  ])).join('\n');
   assert.match(css, /html\s*,\s*body\s*\{[^}]*overflow-x\s*:\s*(?:hidden|clip)/s);
   assert.match(css, /@media\s*\(max-width:\s*640px\)[\s\S]*grid-template-columns\s*:\s*1fr/);
   assert.match(css, /overflow-wrap\s*:\s*anywhere/);
+  assert.match(css, /\.search-input-shell:focus-within[^}]*border-color\s*:\s*var\(--orange\)/s);
+  assert.match(css, /\.search-input-shell:focus-within\s+\.field-scan[^}]*width\s*:\s*100%/s);
+  assert.match(css, /\.category-menu[^}]*position\s*:\s*absolute/s);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
 });
 
 test('筛选控件提供搜索清空与自定义分类菜单的无障碍结构', async () => {
