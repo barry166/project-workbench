@@ -107,6 +107,17 @@ test('生产入口将 /api/health 路由到同一个安全健康响应', async (
   assert.equal(result['content-type'], 'application/json; charset=utf-8');
 });
 
+test('本地与生产入口以 JavaScript MIME 类型提供 ES 模块', async () => {
+  const result = {};
+  const response = {
+    setHeader(name, value) { result[name] = value; },
+    end(value) { result.body = value; },
+  };
+  await server({ url: '/client.mjs' }, response);
+  assert.equal(result['content-type'], 'text/javascript; charset=utf-8');
+  assert.ok(result.body.length > 0);
+});
+
 test('移动端 CSS 阻止页面级横向溢出并切换为单列', async () => {
   const css = (await Promise.all([
     readFile(new URL('../public/styles.css', import.meta.url), 'utf8'),
