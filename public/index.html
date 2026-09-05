@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="独立工具项目工作台">
+  <title>Project Workbench / 项目工作台</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Project Workbench 首页"><span class="brand-mark">P/</span><span>PROJECT WORKBENCH</span></a>
+    <div class="system-status"><i></i><span>WORKSPACE ONLINE</span><time id="clock">--:--:--</time></div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-index" aria-hidden="true">00 / INDEX</div>
+      <div class="hero-copy"><p class="eyebrow">INDEPENDENT TOOLS / 项目入口</p><h1 id="page-title">项目<br><em>工作台</em></h1><p class="lede">所有工具，独立运行。<br>从这里进入你的工作流。</p></div>
+      <div class="hero-metric"><span id="project-count">0 PROJECTS</span><strong>集中入口<br>独立边界</strong><small>PUBLIC LAUNCHER / NO CREDENTIALS</small></div>
+    </section>
+
+    <section class="control-strip" aria-label="项目筛选">
+      <label class="search-field" for="project-search"><span>SEARCH</span><input id="project-search" type="search" placeholder="搜索项目、标签或描述" autocomplete="off"><kbd>/</kbd></label>
+      <label class="filter-field" for="category-filter"><span>CATEGORY</span><select id="category-filter"><option value="all">全部分类</option><option value="账号与权益">账号与权益</option><option value="其他工具">其他工具</option></select></label>
+    </section>
+
+    <section class="workspace-section featured-section" aria-labelledby="featured-title"><div class="section-heading"><div><p class="eyebrow">PINNED ROUTES</p><h2 id="featured-title">置顶项目</h2></div><button class="text-button" id="clear-favorites" type="button">清空收藏 <span>×</span></button></div><div class="project-grid" id="featured-grid"></div></section>
+    <section class="workspace-section recent-section" aria-labelledby="recent-title"><div class="section-heading"><div><p class="eyebrow">LOCAL MEMORY</p><h2 id="recent-title">最近访问</h2></div><span class="section-note">只保留项目 ID</span></div><div class="project-grid" id="recent-grid"></div></section>
+    <section class="workspace-section all-section" aria-labelledby="all-title"><div class="section-heading"><div><p class="eyebrow">REGISTERED PROJECTS</p><h2 id="all-title">全部项目</h2></div><span class="section-note" id="result-count">0 RESULTS</span></div><div class="project-grid" id="project-grid"></div><p class="empty-state" id="empty-state" hidden>没有找到匹配的项目。</p></section>
+  </main>
+  <footer class="footer"><span>CONFIG / SRC/PROJECTS.MJS</span><span>RECENT VISITS / LOCAL STORAGE</span><span>BUILD 001</span></footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
