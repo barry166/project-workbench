@@ -33,6 +33,11 @@ export function toggleFavorite(ids, id) {
   return unique.includes(id) ? unique.filter((item) => item !== id) : [...unique, id];
 }
 
+export function getPinnedProjects(list, favoriteIds) {
+  const favorites = new Set(favoriteIds);
+  return list.filter((project) => project.featured || favorites.has(project.id));
+}
+
 export function recordRecentVisit(ids, id) {
   return [id, ...ids.filter((item) => item !== id)].slice(0, 6);
 }
@@ -79,7 +84,7 @@ function render() {
   const favorites = readIds(STORAGE_KEYS.favorites);
   const recent = readIds(STORAGE_KEYS.recent);
   const visible = filterProjects(projects, { query, category });
-  const featured = visible.filter((project) => project.featured);
+  const featured = getPinnedProjects(visible, favorites);
   const recentProjects = recent.map((id) => projects.find((project) => project.id === id)).filter(Boolean);
 
   featuredRoot.innerHTML = featured.length ? featured.map((project) => projectCard(project, favorites)).join('') : '<p class="muted-state">没有匹配的置顶项目</p>';

@@ -7,6 +7,7 @@ import {
   toggleFavorite,
   recordRecentVisit,
   getStatusMeta,
+  getPinnedProjects,
   STORAGE_KEYS,
 } from '../public/client.mjs';
 import { projects } from '../src/projects.mjs';
@@ -30,6 +31,15 @@ test('收藏逻辑可添加和移除项目且不产生重复项', () => {
   assert.deepEqual(toggleFavorite(['geek-charge', 'geek-charge'], 'chatgpt-account-manager'), [
     'geek-charge',
     'chatgpt-account-manager',
+  ]);
+});
+
+test('置顶区域包含配置置顶和用户收藏的项目且不重复', () => {
+  const pinned = getPinnedProjects(projects, ['future-project']);
+  assert.deepEqual(pinned.map(({ id }) => id), [
+    'geek-charge',
+    'chatgpt-account-manager',
+    'future-project',
   ]);
 });
 
