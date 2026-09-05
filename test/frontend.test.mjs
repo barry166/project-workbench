@@ -11,6 +11,7 @@ import {
 } from '../public/client.mjs';
 import { projects } from '../src/projects.mjs';
 import health from '../api/health.mjs';
+import server from '../src/server.mjs';
 
 test('搜索同时匹配名称、描述、分类和标签且忽略大小写', () => {
   assert.deepEqual(filterProjects(projects, { query: 'GEEK' }).map(({ id }) => id), ['geek-charge']);
@@ -67,6 +68,17 @@ test('健康接口返回稳定且不泄漏环境变量的 JSON', async () => {
   assert.equal(typeof result.body.responseTimeMs, 'number');
   assert.match(result.body.checkedAt, /^\d{4}-\d{2}-\d{2}T/);
   assert.doesNotMatch(JSON.stringify(result.body), /DATABASE|PASSWORD|TOKEN|SECRET/i);
+});
+
+test('生产入口将 /api/health 路由到同一个安全健康响应', async () => {
+  const result = {};
+  const response = {
+    setHeader(name, value) { result[name] = value; },
+    end(value) { result.body = JSON.parse(value); },
+  };
+  await server({ url: '/api/health' }, response);
+  assert.equal(result.body.online, true);
+  assert.equal(result['content-type'], 'application/json; charset=utf-8');
 });
 
 test('移动端 CSS 阻止页面级横向溢出并切换为单列', async () => {
