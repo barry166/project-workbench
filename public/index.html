@@ -23,8 +23,26 @@
     </section>
 
     <section class="control-strip" aria-label="项目筛选">
-      <label class="search-field" for="project-search"><span>SEARCH</span><input id="project-search" type="search" placeholder="搜索项目、标签或描述" autocomplete="off"><kbd>/</kbd></label>
-      <label class="filter-field" for="category-filter"><span>CATEGORY</span><select id="category-filter"><option value="all">全部分类</option><option value="账号与权益">账号与权益</option><option value="其他工具">其他工具</option></select></label>
+      <div class="control-field search-control">
+        <label class="control-label" for="project-search"><span>项目搜索</span><b>SEARCH / PROJECTS</b></label>
+        <div class="search-input-shell">
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+          <span class="search-divider" aria-hidden="true"></span>
+          <input id="project-search" type="search" placeholder="输入项目名称、标签或描述" autocomplete="off">
+          <button id="search-clear" class="search-clear" type="button" aria-label="清空搜索" hidden>×</button>
+          <span class="field-scan" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="control-field category-control">
+        <span class="control-label"><span>项目分类</span><b>CATEGORY / FILTER</b></span>
+        <div class="category-picker">
+          <button id="category-trigger" class="category-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-menu">
+            <span id="category-current">全部分类</span><small id="category-count">03</small>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg>
+          </button>
+          <div id="category-menu" class="category-menu" role="listbox" aria-label="项目分类" tabindex="-1" hidden></div>
+        </div>
+      </div>
     </section>
 
     <section class="workspace-section featured-section" aria-labelledby="featured-title"><div class="section-heading"><div><p class="eyebrow">PINNED ROUTES</p><h2 id="featured-title">置顶项目</h2></div><button class="text-button" id="clear-favorites" type="button">清空收藏 <span>×</span></button></div><div class="project-grid" id="featured-grid"></div></section>

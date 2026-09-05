@@ -114,6 +114,14 @@ test('移动端 CSS 阻止页面级横向溢出并切换为单列', async () => 
   assert.match(css, /overflow-wrap\s*:\s*anywhere/);
 });
 
+test('筛选控件提供搜索清空与自定义分类菜单的无障碍结构', async () => {
+  const html = await readFile(new URL('../public/index.html', import.meta.url), 'utf8');
+  assert.match(html, /id="search-clear"[^>]*aria-label="清空搜索"/);
+  assert.match(html, /id="category-trigger"[^>]*aria-expanded="false"[^>]*aria-controls="category-menu"/);
+  assert.match(html, /id="category-menu"[^>]*role="listbox"/);
+  assert.doesNotMatch(html, /<select\b/);
+});
+
 test('前端源码不引用敏感环境变量或凭据字段', async () => {
   const files = await Promise.all([
     readFile(new URL('../public/index.html', import.meta.url), 'utf8'),

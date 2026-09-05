@@ -5,6 +5,9 @@ export const STORAGE_KEYS = {
   recent: 'project-workbench:recent',
 };
 
+let selectedCategory = 'all';
+let activeCategoryIndex = 0;
+
 const STATUS_META = {
   online: { label: '在线', className: 'status-online' },
   maintenance: { label: '维护中', className: 'status-maintenance' },
@@ -89,13 +92,18 @@ function projectCard(project, favorites) {
   </article>`;
 }
 
+function categoryOption(option) {
+  const selected = option.value === selectedCategory;
+  return `<button class="category-option" type="button" role="option" aria-selected="${selected}" data-category="${escapeHtml(option.value)}"><span>${escapeHtml(option.label)}</span><small>${String(option.count).padStart(2, '0')}</small><i aria-hidden="true">✓</i></button>`;
+}
+
 function render() {
   const root = document.querySelector('#project-grid');
   const featuredRoot = document.querySelector('#featured-grid');
   const recentRoot = document.querySelector('#recent-grid');
   const empty = document.querySelector('#empty-state');
   const query = document.querySelector('#project-search').value;
-  const category = document.querySelector('#category-filter').value;
+  const category = selectedCategory;
   const favorites = readIds(STORAGE_KEYS.favorites);
   const recent = readIds(STORAGE_KEYS.recent);
   const visible = filterProjects(projects, { query, category });
@@ -109,6 +117,88 @@ function render() {
   document.querySelector('#project-count').textContent = `${projects.length} PROJECTS`;
   document.querySelector('#result-count').textContent = `${visible.length} RESULTS`;
   bindCardActions();
+}
+
+function initFilterControls() {
+  const search = document.querySelector('#project-search');
+  const clear = document.querySelector('#search-clear');
+  const picker = document.querySelector('.category-picker');
+  const trigger = document.querySelector('#category-trigger');
+  const menu = document.querySelector('#category-menu');
+  const current = document.querySelector('#category-current');
+  const count = document.querySelector('#category-count');
+  const categoryOptions = getCategoryOptions(projects);
+
+  menu.innerHTML = categoryOptions.map(categoryOption).join('');
+
+  const optionElements = () => [...menu.querySelectorAll('[role="option"]')];
+
+  const updateActiveOption = () => {
+    optionElements().forEach((option, index) => option.classList.toggle('is-active', index === activeCategoryIndex));
+  };
+
+  const setMenuOpen = (open, { focus = false } = {}) => {
+    trigger.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+    picker.classList.toggle('is-open', open);
+    if (open) {
+      activeCategoryIndex = Math.max(0, categoryOptions.findIndex((option) => option.value === selectedCategory));
+      updateActiveOption();
+      if (focus) menu.focus();
+    }
+  };
+
+  const selectCategory = (value) => {
+    const option = categoryOptions.find((item) => item.value === value) ?? categoryOptions[0];
+    selectedCategory = option.value;
+    activeCategoryIndex = categoryOptions.indexOf(option);
+    current.textContent = option.label;
+    count.textContent = String(option.count).padStart(2, '0');
+    optionElements().forEach((element) => element.setAttribute('aria-selected', String(element.dataset.category === selectedCategory)));
+    setMenuOpen(false);
+    render();
+    trigger.focus();
+  };
+
+  search.addEventListener('input', () => {
+    clear.hidden = !search.value;
+    render();
+  });
+  clear.addEventListener('click', () => {
+    search.value = '';
+    clear.hidden = true;
+    search.focus();
+    render();
+  });
+  trigger.addEventListener('click', () => setMenuOpen(trigger.getAttribute('aria-expanded') !== 'true'));
+  trigger.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      setMenuOpen(true, { focus: true });
+    }
+    if (event.key === 'Escape') setMenuOpen(false);
+  });
+  menu.addEventListener('click', (event) => {
+    const option = event.target.closest('[data-category]');
+    if (option) selectCategory(option.dataset.category);
+  });
+  menu.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      activeCategoryIndex = moveOptionIndex(activeCategoryIndex, event.key === 'ArrowDown' ? 1 : -1, categoryOptions.length);
+      updateActiveOption();
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      selectCategory(categoryOptions[activeCategoryIndex].value);
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      setMenuOpen(false);
+      trigger.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (!picker.contains(event.target)) setMenuOpen(false);
+  });
 }
 
 function bindCardActions() {
@@ -127,8 +217,7 @@ function bindCardActions() {
 }
 
 if (typeof document !== 'undefined') {
-  document.querySelector('#project-search')?.addEventListener('input', render);
-  document.querySelector('#category-filter')?.addEventListener('change', render);
+  initFilterControls();
   document.querySelector('#clear-favorites')?.addEventListener('click', () => { writeIds(STORAGE_KEYS.favorites, []); render(); });
   document.querySelector('#clock')?.replaceChildren(new Date().toLocaleTimeString('zh-CN', { hour12: false }));
   render();
