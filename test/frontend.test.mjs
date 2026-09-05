@@ -8,7 +8,7 @@ import {
   recordRecentVisit,
   getStatusMeta,
   STORAGE_KEYS,
-} from '../public/app.js';
+} from '../public/client.mjs';
 import { projects } from '../src/projects.mjs';
 import health from '../api/health.mjs';
 
@@ -79,7 +79,7 @@ test('移动端 CSS 阻止页面级横向溢出并切换为单列', async () => 
 test('前端源码不引用敏感环境变量或凭据字段', async () => {
   const files = await Promise.all([
     readFile(new URL('../public/index.html', import.meta.url), 'utf8'),
-    readFile(new URL('../public/app.js', import.meta.url), 'utf8'),
+    readFile(new URL('../public/client.mjs', import.meta.url), 'utf8'),
     readFile(new URL('../src/projects.mjs', import.meta.url), 'utf8'),
   ]);
   assert.doesNotMatch(files.join('\n'), /process\.env|DATABASE_URL|AUTH_DRIZZLE_URL|password|cookie/i);

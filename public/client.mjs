@@ -1,4 +1,4 @@
-import { projects } from './projects-data.js';
+import { projects } from './projects-data.mjs';
 
 export const STORAGE_KEYS = {
   favorites: 'project-workbench:favorites',
