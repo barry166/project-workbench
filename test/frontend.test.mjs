@@ -148,3 +148,18 @@ test('前端源码不引用敏感环境变量或凭据字段', async () => {
   ]);
   assert.doesNotMatch(files.join('\n'), /process\.env|DATABASE_URL|AUTH_DRIZZLE_URL|password|cookie/i);
 });
+
+test('工作台声明并提供 SVG 标签页图标', async () => {
+  const html = await readFile(new URL('../public/index.html', import.meta.url), 'utf8');
+  assert.match(html, /<link rel="icon" type="image\/svg\+xml" href="\/favicon\.svg">/);
+
+  const result = {};
+  const response = {
+    setHeader(name, value) { result[name] = value; },
+    end(value) { result.body = value; },
+  };
+  await server({ url: '/favicon.svg' }, response);
+  assert.equal(response.statusCode, 200);
+  assert.equal(result['content-type'], 'image/svg+xml');
+  assert.match(String(result.body), /<svg[\s>]/);
+});
