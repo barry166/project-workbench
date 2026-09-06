@@ -20,7 +20,7 @@ export const projects = [
     url: 'https://chatgpt-account-manager.vercel.app',
     category: '账号与权益',
     tags: ['账号资产', '导入', '记录'],
-    status: 'planned',
+    status: 'online',
     featured: true,
     icon: 'AI',
     sortOrder: 20,

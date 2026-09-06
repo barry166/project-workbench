@@ -24,6 +24,14 @@ test('初始项目包含 Geek Charge、ChatGPT 管理台和未来项目位', () 
   ]);
 });
 
+test('两个已上线项目都提供可点击的在线入口', () => {
+  for (const id of ['geek-charge', 'chatgpt-account-manager']) {
+    const project = projects.find((item) => item.id === id);
+    assert.equal(project?.status, 'online', `${id} 应标记为在线`);
+    assert.match(project?.url ?? '', /^https:\/\//);
+  }
+});
+
 test('项目配置校验拒绝重复 ID', () => {
   const duplicate = [{ ...projects[0] }, { ...projects[0] }];
   assert.throws(() => validateProjects(duplicate), /项目 ID 重复/);
@@ -45,4 +53,3 @@ test('项目配置状态值必须受支持', () => {
     /项目状态无效/,
   );
 });
-
